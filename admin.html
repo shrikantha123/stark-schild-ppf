@@ -402,8 +402,8 @@
       }
     }
 
-    /* Hide email cell on desktop by default */
-    .cell-email {
+    /* Hide phone cell on desktop by default */
+    .cell-phone {
       display: none;
     }
 
@@ -471,9 +471,9 @@
         padding: 16px;
         display: grid !important;
         grid-template-areas:
-          "reg vehicle"
+          "reg reg"
           "name brand"
-          "date email"
+          "date phone"
           "actions actions";
         grid-template-columns: 1fr 1fr;
         gap: 12px;
@@ -502,21 +502,7 @@
       }
 
       .cell-vehicle {
-        grid-area: vehicle;
-        font-size: 14px;
-        color: var(--text-muted);
-        text-align: right;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
-      .cell-vehicle::before {
-        content: "Model: ";
-        font-size: 11px;
-        color: rgba(255,255,255,0.4);
-        margin-right: 4px;
+        display: none;
       }
 
       .cell-name {
@@ -552,13 +538,13 @@
         margin-bottom: 2px;
       }
 
-      .cell-email {
-        grid-area: email;
+      .cell-phone {
+        grid-area: phone;
         display: block; /* Show on mobile */
         word-break: break-all;
       }
-      .cell-email::before {
-        content: "Email";
+      .cell-phone::before {
+        content: "Phone";
         display: block;
         font-size: 11px;
         color: var(--text-muted);
@@ -893,7 +879,7 @@
           { html: escapeHtml(c.vehicleModel), class: 'cell-vehicle' },
           { html: escapeHtml(c.ppfBrand), class: 'cell-brand' },
           { html: escapeHtml(c.installationDate), class: 'cell-date' },
-          { html: escapeHtml(c.email), class: 'cell-email' }
+          { html: escapeHtml(c.phone), class: 'cell-phone' }
         ];
 
         cells.forEach(item => {
