@@ -1,0 +1,21 @@
+# === NEVER UPLOAD THESE TO GITHUB ===
+
+# Secret environment variables (passwords, API keys)
+.env
+.env.local
+.env.production
+
+# Local Netlify temp folder
+.netlify
+
+# Node dependencies (huge folder, auto-installed from package.json)
+node_modules/
+
+# OS junk files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/

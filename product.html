@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Stark Schild — invisible paint protection films. German engineering, premium PPF, precision installation.">
+  <title>Products — Stark Schild</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    /* === Reset / Base === */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #0D0D0D;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* === Floating back button === */
+    .floating-back-btn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 999;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(13, 13, 13, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .floating-back-btn:hover {
+      background: #CC0000;
+      border-color: #CC0000;
+      transform: scale(1.05);
+    }
+
+    .floating-back-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @media (min-width: 768px) {
+      .floating-back-btn {
+        top: 24px;
+        left: 24px;
+        width: 44px;
+        height: 44px;
+      }
+
+      .floating-back-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    /* === Film carousel === */
+    #product-carousel .film-carousel {
+      --bg: #0D0D0D;
+      --card: #141414;
+      --card2: #1C1C1C;
+      --border: #272727;
+      --red: #CC0000;
+      --white: #FFFFFF;
+      --g3: #555;
+      --g4: #777;
+      --font: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #product-carousel .film-carousel .page {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #product-carousel .film-carousel .track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      will-change: transform;
+      transition: none;
+    }
+
+    #product-carousel .film-carousel .slide {
+      min-width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #product-carousel .film-carousel .slide-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 64px 20px 28px;
+      gap: 24px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+
+    #product-carousel .film-carousel .slide-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    #product-carousel .film-carousel .slide-right {
+      display: contents;
+    }
+
+    #product-carousel .film-carousel .slide-header {
+      flex-shrink: 0;
+      order: 1;
+    }
+
+    #product-carousel .film-carousel .brand-eye {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      color: var(--red);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    #product-carousel .film-carousel .title-warranty-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    #product-carousel .film-carousel .prod-title {
+      font-size: clamp(2rem, 9vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    #product-carousel .film-carousel .title-warranty-row .prod-title {
+      margin-bottom: 0;
+    }
+
+    #product-carousel .film-carousel .prod-desc {
+      font-size: 10.5px;
+      font-weight: 400;
+      color: var(--g4);
+      line-height: 1.65;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 15px 0 0 0;
+    }
+
+    #product-carousel .film-carousel .img-card {
+      flex-shrink: 0;
+      width: 100%;
+      height: 36vh;
+      min-height: 220px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      order: 2;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    #product-carousel .film-carousel .img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
+    /* Progress row (mobile, per-slide) */
+    #product-carousel .film-carousel .prog-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 8px;
+      flex-shrink: 0;
+      margin: 8px 0;
+      order: 3;
+    }
+
+    #product-carousel .film-carousel .prog-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #product-carousel .film-carousel .pn-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: #fff;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    #product-carousel .film-carousel .pn-btn:hover {
+      background: var(--red);
+      border-color: var(--red);
+      transform: scale(1.08);
+    }
+
+    #product-carousel .film-carousel .pn-btn:disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    #product-carousel .film-carousel .pn-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+    }
+
+    #product-carousel .film-carousel .dots-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    #product-carousel .film-carousel .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #product-carousel .film-carousel .dot.on {
+      width: 20px;
+      border-radius: 3px;
+      background: #fff;
+      border-color: #fff;
+    }
+
+    #product-carousel .film-carousel .frac {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+
+    #product-carousel .film-carousel .frac em {
+      color: var(--g4);
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    /* Specs: mobile = stacked rows */
+    #product-carousel .film-carousel .specs-grid {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      order: 4;
+      border-top: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    #product-carousel .film-carousel .spec-card {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      padding: 16px 4px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #product-carousel .film-carousel .spec-card svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--g4);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    #product-carousel .film-carousel .spec-lbl {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--g4);
+      flex: 1;
+    }
+
+    #product-carousel .film-carousel .spec-val {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+
+    /* Warranty card */
+    #product-carousel .film-carousel .w-card {
+      background: var(--red);
+      border: 1px solid var(--red);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: row !important;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 0;
+      width: fit-content;
+      order: 5;
+    }
+
+    /* Two copies of the warranty card exist: one inline with the title
+       (desktop) and one below the specs grid (mobile/tablet). Only one
+       is shown at a time. */
+    #product-carousel .film-carousel .w-card-desktop {
+      display: none;
+    }
+
+    #product-carousel .film-carousel .w-card svg {
+      width: 22px;
+      height: 22px;
+      stroke: #ffffff;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    #product-carousel .film-carousel .w-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: rgba(255, 255, 255, 0.85);
+      text-transform: uppercase;
+      margin-bottom: 0;
+    }
+
+    #product-carousel .film-carousel .w-lbl::after {
+      content: ':';
+    }
+
+    #product-carousel .film-carousel .w-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.01em;
+      line-height: 1;
+    }
+
+    @media (max-width: 767px) {
+      #product-carousel .film-carousel .w-card {
+        margin-top: 14px;
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Desktop footer nav */
+    #product-carousel .film-carousel .dnav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      gap: 16px;
+      z-index: 99;
+      justify-content: center;
+      align-items: center;
+      padding: 16px 24px;
+      background: rgba(13, 13, 13, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+    }
+
+    #product-carousel .film-carousel .nbtn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    #product-carousel .film-carousel .nbtn:hover {
+      background: var(--red);
+      border-color: var(--red);
+      transform: scale(1.08);
+    }
+
+    #product-carousel .film-carousel .nbtn:disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    #product-carousel .film-carousel .nbtn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* === Tablet layout (768px–1024px) ===
+       Stacked layout like mobile, but with more breathing room: bigger
+       image, 2-column specs grid, larger type, warranty card centered
+       below the specs grid. */
+    @media (min-width: 768px) and (max-width: 1024px) {
+      #product-carousel .film-carousel .page {
+        height: 100dvh;
+        padding-bottom: 72px;
+      }
+
+      #product-carousel .film-carousel .slide-inner {
+        display: flex;
+        flex-direction: column;
+        padding: 88px 56px 40px;
+        gap: 32px;
+        max-width: 640px;
+        margin: 0 auto;
+      }
+
+      #product-carousel .film-carousel .img-card {
+        height: 42vh;
+        min-height: 320px;
+        border-radius: 24px;
+      }
+
+      #product-carousel .film-carousel .prod-title {
+        font-size: clamp(2.6rem, 6vw, 3.4rem);
+      }
+
+      #product-carousel .film-carousel .prod-desc {
+        font-size: 13px;
+      }
+
+      #product-carousel .film-carousel .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        border-top: none;
+        margin-bottom: 0;
+      }
+
+      #product-carousel .film-carousel .spec-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 22px 20px 18px;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      #product-carousel .film-carousel .spec-card:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      #product-carousel .film-carousel .spec-lbl {
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        margin-top: auto;
+      }
+
+      #product-carousel .film-carousel .spec-val {
+        font-size: 19px;
+        text-transform: none;
+        letter-spacing: -0.01em;
+      }
+
+      #product-carousel .film-carousel .spec-card svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      #product-carousel .film-carousel .w-card {
+        margin-top: 4px;
+        width: 100%;
+        justify-content: center;
+        border-radius: 12px;
+      }
+
+      #product-carousel .film-carousel .w-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(204, 0, 0, 0.3);
+      }
+    }
+
+    /* === Desktop layout (≥1025px) ===
+       Side-by-side split: image left, scrollable content right, warranty
+       card inline next to the title. */
+    @media (min-width: 1025px) {
+      #product-carousel .film-carousel .page {
+        height: 100dvh;
+        padding-bottom: 72px;
+      }
+
+      #product-carousel .film-carousel .slide-inner {
+        display: grid;
+        grid-template-columns: 42% 58%;
+        grid-template-rows: 1fr;
+        padding: 0;
+        gap: 0;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      #product-carousel .film-carousel .img-card {
+        grid-column: 1;
+        grid-row: 1;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        border: none;
+        min-height: unset;
+        border-right: 1px solid var(--border);
+        box-shadow: none;
+      }
+
+      #product-carousel .film-carousel .slide-right {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex !important;
+        flex-direction: column;
+        padding: clamp(40px, 6vh, 72px) clamp(32px, 5vw, 56px);
+        gap: 28px;
+        overflow-y: auto;
+        height: 100%;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+      }
+
+      #product-carousel .film-carousel .slide-header {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        flex-shrink: 0;
+      }
+
+      #product-carousel .film-carousel .title-warranty-row {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+        flex-wrap: nowrap;
+      }
+
+      #product-carousel .film-carousel .prod-title {
+        font-size: clamp(2.4rem, 4vw, 4.8rem);
+      }
+
+      #product-carousel .film-carousel .w-card-desktop {
+        display: flex;
+        flex-shrink: 0;
+      }
+
+      #product-carousel .film-carousel .w-card-mobile {
+        display: none;
+      }
+
+      #product-carousel .film-carousel .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        flex-shrink: 0;
+        border-top: none;
+      }
+
+      #product-carousel .film-carousel .spec-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px 18px 16px;
+        flex-direction: column;
+        gap: 10px;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      #product-carousel .film-carousel .spec-card:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      #product-carousel .film-carousel .spec-lbl {
+        font-size: 9px;
+        letter-spacing: 0.16em;
+        margin-top: auto;
+      }
+
+      #product-carousel .film-carousel .spec-val {
+        font-size: 18px;
+        text-transform: none;
+        letter-spacing: -0.01em;
+      }
+
+      #product-carousel .film-carousel .spec-card svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      #product-carousel .film-carousel .w-card {
+        margin-top: 8px;
+        border-radius: 12px;
+      }
+
+      #product-carousel .film-carousel .w-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(204, 0, 0, 0.3);
+      }
+    }
+
+    /* === Shared, both tablet & desktop (≥768px) === */
+    @media (min-width: 768px) {
+      #product-carousel .film-carousel .prog-row {
+        display: none;
+      }
+
+      #product-carousel .film-carousel .dnav {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="floating-back-btn" title="Back to Home">
+    <svg fill="none" viewBox="0 0 24 24">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </a>
+
+  <main id="product-carousel">
+    <div class="film-carousel">
+      <div class="page">
+        <div class="track" id="track">
+          <div class="slide">
+            <div class="slide-inner">
+              <div class="img-card"><img src="images/WhatsApp Image 2026-06-19 at 3.49.39 PM.jpeg" alt="Premium"></div>
+              <div class="prog-row">
+                <button class="pn-btn pn-prev"><svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg></button>
+                <div class="prog-center">
+                  <div class="frac"><span id="c0">01</span><em> / 05</em></div>
+                  <div class="dots-wrap" id="d0"></div>
+                </div>
+                <button class="pn-btn pn-next"><svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg></button>
+              </div>
+              <div class="slide-right">
+                <div class="slide-header">
+                  <p class="brand-eye">STARK SCHILD</p>
+                  <div class="title-warranty-row">
+                    <h2 class="prod-title">Premium</h2>
+                    <div class="w-card w-card-desktop">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <p class="w-lbl">Warranty</p>
+                      <p class="w-val">10 Years</p>
+                    </div>
+
+                  </div>
+                  <p class="prod-desc">Unparalleled scratch resistance, exceptional hydrophobicity, guaranteed peace of
+                    mind for a full decade.</p>
+                </div>
+                <div class="specs-grid">
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <p class="spec-lbl">Finish</p>
+                    <p class="spec-val">Glossy</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 21V3m0 9h16M20 3v18" />
+                      <path d="M8 7h8M8 17h8" />
+                    </svg>
+                    <p class="spec-lbl">Thickness</p>
+                    <p class="spec-val">250 μm</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14Z" />
+                      <path d="M8 16.5a4 4 0 0 0 8 0" />
+                    </svg>
+                    <p class="spec-lbl">Hydrophobic</p>
+                    <p class="spec-val">Yes</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    <p class="spec-lbl">Self-Healing</p>
+                    <p class="spec-val">30 μm</p>
+                  </div>
+                </div>
+                <div class="w-card w-card-mobile">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <p class="w-lbl">Warranty</p>
+                  <p class="w-val">10 Years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-inner">
+              <div class="img-card"><img src="images/pexels-sebastianpichard-9113865.jpg.jpeg" alt="Supreme"></div>
+              <div class="prog-row">
+                <button class="pn-btn pn-prev"><svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg></button>
+                <div class="prog-center">
+                  <div class="frac"><span id="c1">02</span><em> / 05</em></div>
+                  <div class="dots-wrap" id="d1"></div>
+                </div>
+                <button class="pn-btn pn-next"><svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg></button>
+              </div>
+              <div class="slide-right">
+                <div class="slide-header">
+                  <p class="brand-eye">STARK SCHILD</p>
+                  <div class="title-warranty-row">
+                    <h2 class="prod-title">Supreme</h2>
+                    <div class="w-card w-card-desktop">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <p class="w-lbl">Warranty</p>
+                      <p class="w-val">10 Years</p>
+                    </div>
+
+                  </div>
+                  <p class="prod-desc">Exceptional scratch resistance, brilliant gloss, and enhanced hydrophobic
+                    protection. The best choice for premium cars.</p>
+                </div>
+                <div class="specs-grid">
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <p class="spec-lbl">Finish</p>
+                    <p class="spec-val">Glossy</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 21V3m0 9h16M20 3v18" />
+                      <path d="M8 7h8M8 17h8" />
+                    </svg>
+                    <p class="spec-lbl">Thickness</p>
+                    <p class="spec-val">230 μm</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14Z" />
+                      <path d="M8 16.5a4 4 0 0 0 8 0" />
+                    </svg>
+                    <p class="spec-lbl">Hydrophobic</p>
+                    <p class="spec-val">Yes</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    <p class="spec-lbl">Self-Healing</p>
+                    <p class="spec-val">20 μm</p>
+                  </div>
+                </div>
+                <div class="w-card w-card-mobile">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <p class="w-lbl">Warranty</p>
+                  <p class="w-val">10 Years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-inner">
+              <div class="img-card"><img src="images/WhatsApp Image 2026-06-19 at 3.49.39 PM (1).jpeg" alt="Ultra">
+              </div>
+              <div class="prog-row">
+                <button class="pn-btn pn-prev"><svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg></button>
+                <div class="prog-center">
+                  <div class="frac"><span id="c2">03</span><em> / 05</em></div>
+                  <div class="dots-wrap" id="d2"></div>
+                </div>
+                <button class="pn-btn pn-next"><svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg></button>
+              </div>
+              <div class="slide-right">
+                <div class="slide-header">
+                  <p class="brand-eye">STARK SCHILD</p>
+                  <div class="title-warranty-row">
+                    <h2 class="prod-title">Ultra</h2>
+                    <div class="w-card w-card-desktop">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <p class="w-lbl">Warranty</p>
+                      <p class="w-val">7 Years</p>
+                    </div>
+
+                  </div>
+                  <p class="prod-desc">Premium protection and brilliant shine for seven years. The most value-for-money
+                    choice for all types of cars.</p>
+                </div>
+                <div class="specs-grid">
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <p class="spec-lbl">Finish</p>
+                    <p class="spec-val">Glossy</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 21V3m0 9h16M20 3v18" />
+                      <path d="M8 7h8M8 17h8" />
+                    </svg>
+                    <p class="spec-lbl">Thickness</p>
+                    <p class="spec-val">200 μm</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14Z" />
+                      <path d="M8 16.5a4 4 0 0 0 8 0" />
+                    </svg>
+                    <p class="spec-lbl">Hydrophobic</p>
+                    <p class="spec-val">Yes</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    <p class="spec-lbl">Self-Healing</p>
+                    <p class="spec-val">10 μm</p>
+                  </div>
+                </div>
+                <div class="w-card w-card-mobile">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <p class="w-lbl">Warranty</p>
+                  <p class="w-val">7 Years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-inner">
+              <div class="img-card"><img
+                  src="images/matte-black-mercedez-benz-car-vehicle-21-09-2024-1726956813-hd-wallpaper.jpg.jpeg"
+                  alt="Matte">
+              </div>
+              <div class="prog-row">
+                <button class="pn-btn pn-prev"><svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg></button>
+                <div class="prog-center">
+                  <div class="frac"><span id="c3">04</span><em> / 05</em></div>
+                  <div class="dots-wrap" id="d3"></div>
+                </div>
+                <button class="pn-btn pn-next"><svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg></button>
+              </div>
+              <div class="slide-right">
+                <div class="slide-header">
+                  <p class="brand-eye">STARK SCHILD</p>
+                  <div class="title-warranty-row">
+                    <h2 class="prod-title">Matte</h2>
+                    <div class="w-card w-card-desktop">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <p class="w-lbl">Warranty</p>
+                      <p class="w-val">10 Years</p>
+                    </div>
+
+                  </div>
+                  <p class="prod-desc">Non-reflective, matte finish for stealth look and elevated hydrophobic
+                    properties. For discerning owners who seek a distinctive presence on the road.</p>
+                </div>
+                <div class="specs-grid">
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <p class="spec-lbl">Finish</p>
+                    <p class="spec-val">Matte</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 21V3m0 9h16M20 3v18" />
+                      <path d="M8 7h8M8 17h8" />
+                    </svg>
+                    <p class="spec-lbl">Thickness</p>
+                    <p class="spec-val">200 μm</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14Z" />
+                      <path d="M8 16.5a4 4 0 0 0 8 0" />
+                    </svg>
+                    <p class="spec-lbl">Hydrophobic</p>
+                    <p class="spec-val">Yes</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    <p class="spec-lbl">Self-Healing</p>
+                    <p class="spec-val">10 μm</p>
+                  </div>
+                </div>
+                <div class="w-card w-card-mobile">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <p class="w-lbl">Warranty</p>
+                  <p class="w-val">10 Years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slide">
+            <div class="slide-inner">
+              <div class="img-card"><img src="images/ferrari_f50_by_pininfarina-2560x1440.jpg.jpeg" alt="Color"></div>
+              <div class="prog-row">
+                <button class="pn-btn pn-prev"><svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg></button>
+                <div class="prog-center">
+                  <div class="frac"><span id="c4">05</span><em> / 05</em></div>
+                  <div class="dots-wrap" id="d4"></div>
+                </div>
+                <button class="pn-btn pn-next"><svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg></button>
+              </div>
+              <div class="slide-right">
+                <div class="slide-header">
+                  <p class="brand-eye">STARK SCHILD</p>
+                  <div class="title-warranty-row">
+                    <h2 class="prod-title">Color</h2>
+                    <div class="w-card w-card-desktop">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <p class="w-lbl">Warranty</p>
+                      <p class="w-val">10 Years</p>
+                    </div>
+
+                  </div>
+                  <p class="prod-desc">Manufacturers mix auto-paint resin and deep-saturation nano-pigments into the TPU
+                    layers to create premium finishes.</p>
+                </div>
+                <div class="specs-grid">
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <p class="spec-lbl">Finish</p>
+                    <p class="spec-val">Ultra Gloss</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M4 21V3m0 9h16M20 3v18" />
+                      <path d="M8 7h8M8 17h8" />
+                    </svg>
+                    <p class="spec-lbl">Thickness</p>
+                    <p class="spec-val">200 μm</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 2C6 9 4 13 4 16a8 8 0 0 0 16 0c0-3-2-7-8-14Z" />
+                      <path d="M8 16.5a4 4 0 0 0 8 0" />
+                    </svg>
+                    <p class="spec-lbl">Hydrophobic</p>
+                    <p class="spec-val">Yes</p>
+                  </div>
+                  <div class="spec-card">
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    <p class="spec-lbl">Self-Healing</p>
+                    <p class="spec-val">10 μm</p>
+                  </div>
+                </div>
+                <div class="w-card w-card-mobile">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <p class="w-lbl">Warranty</p>
+                  <p class="w-val">10 Years</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dnav" id="film-dnav">
+        <button type="button" class="nbtn" id="bp"><svg viewBox="0 0 24 24">
+            <polyline points="15 18 9 12 15 6" />
+          </svg></button>
+        <div class="prog-center" style="display:flex;flex-direction:row;align-items:center;gap:12px;">
+          <div class="frac" id="dnav-frac"><span id="dc">01</span><em> / 05</em></div>
+          <div class="dots-wrap" id="dd"></div>
+        </div>
+        <button type="button" class="nbtn" id="bn"><svg viewBox="0 0 24 24">
+            <polyline points="9 18 15 12 9 6" />
+          </svg></button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Carousel Core Logic
+    const track = document.getElementById('track');
+    const T = 5;
+    let cur = 0;
+    let busy = false;
+    const bp = document.getElementById('bp');
+    const bn = document.getElementById('bn');
+
+    function pad(n) { return (n + 1).toString().padStart(2, '0'); }
+
+    // Init dots (mobile per-slide + desktop footer)
+    for (let i = 0; i < T; i++) {
+      const d = document.getElementById('d' + i);
+      if (d) {
+        for (let j = 0; j < T; j++) {
+          const dot = document.createElement('div');
+          dot.className = 'dot' + (j === i ? ' on' : '');
+          d.appendChild(dot);
+        }
+      }
+    }
+    // Init desktop footer dots
+    const dd = document.getElementById('dd');
+    if (dd) {
+      for (let j = 0; j < T; j++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (j === 0 ? ' on' : '');
+        dd.appendChild(dot);
+      }
+    }
+
+    function updateUI(n) {
+      for (let i = 0; i < T; i++) {
+        const c = document.getElementById('d' + i);
+        if (c) Array.from(c.children).forEach((d, idx) => d.classList.toggle('on', idx === n));
+        const el = document.getElementById('c' + i);
+        if (el) el.textContent = pad(n);
+      }
+      // Update desktop footer dots + counter
+      const dd = document.getElementById('dd');
+      if (dd) Array.from(dd.children).forEach((d, idx) => d.classList.toggle('on', idx === n));
+      const dc = document.getElementById('dc');
+      if (dc) dc.textContent = pad(n);
+      bp.disabled = n === 0;
+      bn.disabled = n === T - 1;
+      document.querySelectorAll('.pn-prev').forEach(b => b.disabled = n === 0);
+      document.querySelectorAll('.pn-next').forEach(b => b.disabled = n === T - 1);
+    }
+
+    function render(extraPx, animate) {
+      track.style.transition = animate ? 'transform 0.5s cubic-bezier(0.16,1,0.3,1)' : 'none';
+      track.style.transform = 'translateX(calc(-' + (cur * 100) + '% + ' + extraPx + 'px))';
+    }
+
+    function go(n, animate = true) {
+      if (n < 0 || n >= T) return;
+      if (busy && animate) return;
+      busy = animate;
+      cur = n;
+      updateUI(cur);
+      render(0, animate);
+      const newHash = reverseMap[n];
+      if (window.location.hash !== newHash) {
+        history.replaceState(null, null, newHash);
+      }
+    }
+
+    track.addEventListener('transitionend', () => { busy = false; });
+
+    bp.onclick = () => go(cur - 1, true);
+    bn.onclick = () => go(cur + 1, true);
+    document.querySelectorAll('.pn-prev').forEach(b => b.onclick = () => go(cur - 1, true));
+    document.querySelectorAll('.pn-next').forEach(b => b.onclick = () => go(cur + 1, true));
+
+    // Deep Linking
+    const productMap = { '#premium': 0, '#supreme': 1, '#ultra': 2, '#matte': 3, '#color': 4 };
+    const reverseMap = ['#premium', '#supreme', '#ultra', '#matte', '#color'];
+
+    function handleHash(animate = false) {
+      const hash = window.location.hash;
+      if (productMap[hash] !== undefined) {
+        go(productMap[hash], animate);
+      } else {
+        go(0, animate);
+      }
+    }
+
+    window.addEventListener('hashchange', () => {
+      handleHash(true);
+    });
+
+    // Run immediately on parse to ensure proper starting slide and UI state
+    handleHash(false);
+
+  </script>
+</body>
+
+</html>

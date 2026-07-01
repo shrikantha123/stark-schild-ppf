@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Stark Schild</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0d0d0d;
+      --card-bg: #141414;
+      --primary: #CC0000;
+      /* Stark Schild Red */
+      --primary-hover: #a30000;
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --border-color: #272727;
+      --danger: #FF3D00;
+      --success: #00C853;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at top left, rgba(212, 175, 55, 0.05), transparent 40%);
+    }
+
+    /* UTILITIES */
+    .hidden {
+      display: none !important;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .btn-blue {
+      background: #0d6efd;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-blue:hover {
+      background: #0b5ed7;
+    }
+
+    .btn-warning {
+      background: #475569;
+      color: #fff;
+      border: none;
+    }
+
+    .btn-warning:hover {
+      background: #334155;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: #fff;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+      animation: btn-pulse 1.5s infinite;
+    }
+
+    @keyframes btn-pulse {
+      0% {
+        opacity: 0.7;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.02);
+      }
+
+      100% {
+        opacity: 0.7;
+        transform: scale(1);
+      }
+    }
+
+    /* LOGIN VIEW */
+    #login-view {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-card h2 {
+      margin-bottom: 20px;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      font-size: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    #login-error {
+      color: var(--danger);
+      font-size: 14px;
+      margin-bottom: 10px;
+      min-height: 20px;
+    }
+
+    /* DASHBOARD VIEW */
+    #dashboard-view {
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    header h1 {
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: #fff;
+    }
+
+    /* TABLE */
+    .table-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid var(--primary);
+      transform: translateY(-20px);
+      transition: 0.3s;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .modal-footer {
+      margin-top: 25px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      background: var(--card-bg);
+      border-left: 4px solid var(--primary);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-view">
+    <div class="login-card">
+      <h2>STARK SCHILD ®<br><span
+          style="font-size:14px; letter-spacing:2px; color:var(--primary); font-weight:400; display:block; margin-top:8px;">ADMIN
+          PORTAL</span></h2>
+      <div id="login-error"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">SECURE LOGIN</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboard-view" class="hidden">
+    <header>
+      <h1>STARK SCHILD ® <span style="color:var(--text-muted); font-size:16px; font-weight:400; letter-spacing:2px;">|
+          ADMIN</span></h1>
+      <button class="btn btn-danger" onclick="logout()">LOGOUT</button>
+    </header>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search by Reg No or Email...">
+      </div>
+      <button class="btn btn-blue" onclick="openModal('add')">+ ADD CUSTOMER</button>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Reg No.</th>
+            <th>Customer Name</th>
+            <th>Vehicle</th>
+            <th>PPF Brand</th>
+            <th>Install Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="customer-table-body">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+    <div id="pagination-controls" style="margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:5px;"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h3 id="modal-title">Add Customer</h3>
+      <form id="customer-form">
+        <div class="form-grid">
+          <div class="form-group"><label>Reg Number</label><input type="text" id="m-reg" class="form-control" required>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="m-email" class="form-control" required>
+          </div>
+          <div class="form-group"><label>Customer Name</label><input type="text" id="m-name" class="form-control"
+              required></div>
+          <div class="form-group"><label>Phone</label><input type="text" id="m-phone" class="form-control"></div>
+          <div class="form-group"><label>Vehicle Model</label><input type="text" id="m-vehicle" class="form-control">
+          </div>
+          <div class="form-group"><label>PPF Brand</label><input type="text" id="m-brand" class="form-control"></div>
+          <div class="form-group"><label>Coverage Type</label><input type="text" id="m-coverage" class="form-control">
+          </div>
+          <div class="form-group"><label>Install Date</label><input type="date" id="m-date" class="form-control"></div>
+          <div class="form-group"><label>Warranty Years</label><input type="number" id="m-years" class="form-control"
+              min="0"></div>
+          <div class="form-group"><label>Warranty End Date</label><input type="date" id="m-end" class="form-control"
+              readonly style="background: rgba(0,0,0,0.6); color: #888; cursor: not-allowed;"></div>
+          <div class="form-group"><label>Dealer Name</label><input type="text" id="m-dealer" class="form-control"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal()">CANCEL</button>
+          <button type="submit" class="btn" id="modal-submit-btn">SAVE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="delete-modal-overlay">
+    <div class="modal" style="max-width: 400px; text-align: center;">
+      <h3 style="color: #CC0000; margin-bottom: 10px;">Delete Customer?</h3>
+      <p style="color: #bbb; margin-bottom: 25px;">Are you sure you want to delete registration number <strong id="delete-target-text" style="color: #fff;"></strong>? This action cannot be undone.</p>
+      <div class="modal-footer" style="justify-content: center; gap: 15px;">
+        <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">CANCEL</button>
+        <button type="button" class="btn" style="background: #CC0000;" id="confirm-delete-btn" onclick="confirmDeleteCustomer()">DELETE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast">Message here</div>
+
+  <script>
+    const API_BASE = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && window.location.port !== '3000'
+      ? 'http://localhost:3000/.netlify/functions'
+      : '/.netlify/functions';
+    let currentCustomers = [];
+    let modalMode = 'add'; // 'add' or 'edit'
+    let currentPage = 1;
+    let totalPages = 1;
+    let searchTimeout = null;
+    let currentSearch = '';
+
+    // Check Auth on Load — with expiry check for security
+    window.onload = () => {
+      const token = localStorage.getItem('adminToken');
+      const expiry = localStorage.getItem('adminTokenExpiry');
+      const now = Date.now();
+      // Auto-logout if token is missing OR expired (8 hours)
+      if (token && expiry && now < parseInt(expiry)) {
+        showDashboard();
+        fetchCustomers();
+      } else {
+        // Clear any stale/expired token automatically
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminTokenExpiry');
+      }
+    };
+
+    // Login Logic
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      const err = document.getElementById('login-error');
+      const btn = e.target.querySelector('button[type="submit"]');
+
+      const originalText = btn.innerText;
+      btn.innerText = 'PLEASE WAIT...';
+      btn.classList.add('loading');
+
+      try {
+        const res = await fetch(`${API_BASE}/admin-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (data.success) {
+          const expiryTime = Date.now() + (8 * 60 * 60 * 1000); // 8 hours from now
+          localStorage.setItem('adminToken', data.token);
+          localStorage.setItem('adminTokenExpiry', expiryTime.toString());
+          showDashboard();
+          fetchCustomers();
+        } else {
+          err.innerText = data.message;
+        }
+      } catch (e) { err.innerText = 'Network error: ' + e.message; console.error(e); }
+      finally {
+        btn.innerText = originalText;
+        btn.classList.remove('loading');
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminTokenExpiry');
+      document.getElementById('dashboard-view').classList.add('hidden');
+      document.getElementById('login-view').classList.remove('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('dashboard-view').classList.remove('hidden');
+    }
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => t.className = 'toast', 3000);
+    }
+
+    async function authFetch(url, options = {}) {
+      const token = localStorage.getItem('adminToken');
+      const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
+      return res.json();
+    }
+
+    async function fetchCustomers(page = 1, search = '') {
+      currentPage = page;
+      currentSearch = search;
+      try {
+        const params = new URLSearchParams({ page, limit: 20 });
+        if (search) params.set('search', search);
+        const data = await authFetch(`${API_BASE}/get-customers?${params.toString()}`);
+        if (data.success) {
+          currentCustomers = data.data;
+          totalPages = data.pagination ? data.pagination.totalPages : 1;
+          renderTable(currentCustomers);
+          renderPagination(data.pagination);
+        }
+      } catch (e) { showToast('Failed to load customers', 'error'); }
+    }
+
+    // Safely escape text to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '-';
+      return div.innerHTML;
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById('customer-table-body');
+      tbody.innerHTML = '';
+
+      if (!data || data.length === 0) {
+        const emptyRow = document.createElement('tr');
+        const emptyCell = document.createElement('td');
+        emptyCell.colSpan = 6;
+        emptyCell.textContent = 'No customers found.';
+        emptyCell.style.cssText = 'text-align:center; padding:30px; color:rgba(255,255,255,0.4);';
+        emptyRow.appendChild(emptyCell);
+        tbody.appendChild(emptyRow);
+        return;
+      }
+
+      data.forEach(c => {
+        const tr = document.createElement('tr');
+
+        const cells = [
+          `<strong>${escapeHtml(c.registrationNumber)}</strong>`,
+          escapeHtml(c.customerName),
+          escapeHtml(c.vehicleModel),
+          escapeHtml(c.ppfBrand),
+          escapeHtml(c.installationDate),
+        ];
+
+        cells.forEach(html => {
+          const td = document.createElement('td');
+          td.innerHTML = html;
+          tr.appendChild(td);
+        });
+
+        // Action buttons — use data attributes to avoid inline event injection
+        const actionTd = document.createElement('td');
+        actionTd.className = 'action-btns';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-warning';
+        editBtn.style.cssText = 'padding:5px 10px; font-size:12px;';
+        editBtn.textContent = 'Edit';
+        editBtn.dataset.reg = c.registrationNumber;
+        editBtn.addEventListener('click', () => openModal('edit', c.registrationNumber));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-danger';
+        delBtn.style.cssText = 'padding:5px 10px; font-size:12px;';
+        delBtn.textContent = 'Del';
+        delBtn.dataset.reg = c.registrationNumber;
+        delBtn.addEventListener('click', function() { promptDeleteCustomer(c.registrationNumber); });
+
+        actionTd.appendChild(editBtn);
+        actionTd.appendChild(delBtn);
+        tr.appendChild(actionTd);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderPagination(pagination) {
+      let container = document.getElementById('pagination-controls');
+      if (!container) return;
+      if (!pagination || pagination.totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+      container.innerHTML = `
+        <span style="color:rgba(255,255,255,0.5); font-size:13px;">Page ${pagination.page} of ${pagination.totalPages} &nbsp;|&nbsp; ${pagination.total} customers</span>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button class="btn btn-outline" onclick="fetchCustomers(${pagination.page - 1}, currentSearch)" ${pagination.page <= 1 ? 'disabled style="opacity:.4;pointer-events:none;"' : ''}>← Prev</button>
+          <button class="btn btn-outline" onclick="fetchCustomers(${pagination.page + 1}, currentSearch)" ${pagination.page >= pagination.totalPages ? 'disabled style="opacity:.4;pointer-events:none;"' : ''}>Next →</button>
+        </div>
+      `;
+    }
+
+    // Debounced server-side search
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        fetchCustomers(1, e.target.value.trim());
+      }, 350);
+    });
+
+    let editingId = null;
+    let editingRegNo = null;
+
+    function calculateEndDate() {
+      const installDate = document.getElementById('m-date').value;
+      const years = parseFloat(document.getElementById('m-years').value);
+      const endInput = document.getElementById('m-end');
+
+      if (installDate && !isNaN(years)) {
+        // Parse date components safely to avoid timezone shifts
+        const parts = installDate.split('-');
+        let year = parseInt(parts[0], 10);
+        let month = parseInt(parts[1], 10) - 1; // JS months are 0-indexed
+        let day = parseInt(parts[2], 10);
+
+        const date = new Date(year, month, day);
+        date.setFullYear(date.getFullYear() + years);
+
+        // Subtract 1 day for standard warranty calculation
+        date.setDate(date.getDate() - 1);
+
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        endInput.value = `${yyyy}-${mm}-${dd}`;
+      } else {
+        endInput.value = '';
+      }
+    }
+
+    document.getElementById('m-date').addEventListener('change', calculateEndDate);
+    document.getElementById('m-years').addEventListener('input', calculateEndDate);
+
+    // Modal Logic
+    function openModal(mode, regNo = null) {
+      modalMode = mode;
+      document.getElementById('modal-title').innerText = mode === 'add' ? 'Add New Customer' : 'Edit Customer';
+      document.getElementById('customer-form').reset();
+
+      const regInput = document.getElementById('m-reg');
+      regInput.readOnly = false; // Always editable now
+
+      editingId = null;
+      editingRegNo = null;
+
+      if (mode === 'edit' && regNo) {
+        const c = currentCustomers.find(x => x.registrationNumber === regNo);
+        if (c) {
+          editingId = c.id;
+          editingRegNo = c.registrationNumber;
+          document.getElementById('m-reg').value = c.registrationNumber || '';
+          document.getElementById('m-email').value = c.email || '';
+          document.getElementById('m-name').value = c.customerName || '';
+          document.getElementById('m-phone').value = c.phone || '';
+          document.getElementById('m-vehicle').value = c.vehicleModel || '';
+          document.getElementById('m-brand').value = c.ppfBrand || '';
+          document.getElementById('m-coverage').value = c.coverageType || '';
+          document.getElementById('m-date').value = c.installationDate || '';
+          document.getElementById('m-years').value = c.warrantyYears || '';
+          document.getElementById('m-end').value = c.warrantyEndDate || '';
+          document.getElementById('m-dealer').value = c.dealerName || '';
+        }
+      }
+      document.getElementById('modal-overlay').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+
+    document.getElementById('customer-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('modal-submit-btn');
+      const originalText = btn.innerText;
+      btn.innerText = 'SAVING...';
+      btn.classList.add('loading');
+
+      const payload = {
+        id: editingId,
+        oldRegistrationNumber: editingRegNo,
+        registrationNumber: document.getElementById('m-reg').value,
+        email: document.getElementById('m-email').value,
+        customerName: document.getElementById('m-name').value,
+        phone: document.getElementById('m-phone').value,
+        vehicleModel: document.getElementById('m-vehicle').value,
+        ppfBrand: document.getElementById('m-brand').value,
+        coverageType: document.getElementById('m-coverage').value,
+        installationDate: document.getElementById('m-date').value,
+        warrantyYears: document.getElementById('m-years').value,
+        warrantyEndDate: document.getElementById('m-end').value,
+        dealerName: document.getElementById('m-dealer').value
+      };
+
+      const endpoint = modalMode === 'add' ? '/add-customer' : '/update-customer';
+      const method = modalMode === 'add' ? 'POST' : 'PUT';
+
+      try {
+        const data = await authFetch(`${API_BASE}${endpoint}`, {
+          method, body: JSON.stringify(payload)
+        });
+        if (data.success) {
+          showToast(data.message, 'success');
+          closeModal();
+          fetchCustomers();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) { showToast('Request failed', 'error'); }
+      finally {
+        btn.innerText = originalText;
+        btn.classList.remove('loading');
+      }
+    });
+
+    let deleteTargetRegNo = null;
+
+    function promptDeleteCustomer(regNo) {
+      deleteTargetRegNo = regNo;
+      document.getElementById('delete-target-text').innerText = regNo;
+      document.getElementById('delete-modal-overlay').classList.add('active');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal-overlay').classList.remove('active');
+      deleteTargetRegNo = null;
+    }
+
+    async function confirmDeleteCustomer() {
+      if (!deleteTargetRegNo) return;
+      const btnElement = document.getElementById('confirm-delete-btn');
+      
+      const originalText = btnElement.innerText;
+      btnElement.innerText = 'DELETING...';
+      btnElement.classList.add('loading');
+
+      try {
+        const data = await authFetch(`${API_BASE}/delete-customer`, {
+          method: 'DELETE', body: JSON.stringify({ registrationNumber: deleteTargetRegNo })
+        });
+        if (data.success) {
+          showToast('Customer deleted', 'success');
+          fetchCustomers();
+          closeDeleteModal();
+        } else {
+          showToast(data.message, 'error');
+        }
+      } catch (e) { showToast('Delete failed', 'error'); }
+      finally {
+        btnElement.innerText = originalText;
+        btnElement.classList.remove('loading');
+      }
+    }
+  </script>
+</body>
+
+</html>
