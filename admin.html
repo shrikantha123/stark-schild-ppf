@@ -401,6 +401,186 @@
         height: 44px;
       }
     }
+
+    /* Hide email cell on desktop by default */
+    .cell-email {
+      display: none;
+    }
+
+    /* Responsive Mobile Styles for Admin Panel */
+    @media (max-width: 768px) {
+      #dashboard-view {
+        padding: 15px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+      }
+
+      header h1 {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .search-box {
+        max-width: none;
+        width: 100%;
+      }
+
+      .toolbar .btn-blue {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .table-container {
+        border: none;
+        background: transparent;
+      }
+
+      table, thead, tbody, tr, td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Suitable gap between cards */
+      }
+
+      tr {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        display: grid !important;
+        grid-template-areas:
+          "reg vehicle"
+          "name brand"
+          "date email"
+          "actions actions";
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      tr:hover {
+        background: var(--card-bg);
+      }
+
+      td {
+        padding: 0;
+        border: none;
+        font-size: 14px;
+        background: transparent;
+      }
+
+      .cell-reg {
+        grid-area: reg;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+        display: flex;
+        align-items: center;
+      }
+
+      .cell-vehicle {
+        grid-area: vehicle;
+        font-size: 14px;
+        color: var(--text-muted);
+        text-align: right;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .cell-vehicle::before {
+        content: "Model: ";
+        font-size: 11px;
+        color: rgba(255,255,255,0.4);
+        margin-right: 4px;
+      }
+
+      .cell-name {
+        grid-area: name;
+      }
+      .cell-name::before {
+        content: "Name";
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+      }
+
+      .cell-brand {
+        grid-area: brand;
+      }
+      .cell-brand::before {
+        content: "Product";
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+      }
+
+      .cell-date {
+        grid-area: date;
+      }
+      .cell-date::before {
+        content: "Installation Date";
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+      }
+
+      .cell-email {
+        grid-area: email;
+        display: block; /* Show on mobile */
+        word-break: break-all;
+      }
+      .cell-email::before {
+        content: "Email";
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+      }
+
+      .cell-actions {
+        grid-area: actions;
+        border-top: 1px solid var(--border-color);
+        padding-top: 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .cell-actions .btn {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        font-size: 13px !important;
+      }
+    }
   </style>
 </head>
 
@@ -696,7 +876,7 @@
       if (!data || data.length === 0) {
         const emptyRow = document.createElement('tr');
         const emptyCell = document.createElement('td');
-        emptyCell.colSpan = 6;
+        emptyCell.colSpan = 7;
         emptyCell.textContent = 'No customers found.';
         emptyCell.style.cssText = 'text-align:center; padding:30px; color:rgba(255,255,255,0.4);';
         emptyRow.appendChild(emptyCell);
@@ -708,22 +888,24 @@
         const tr = document.createElement('tr');
 
         const cells = [
-          `<strong>${escapeHtml(c.registrationNumber)}</strong>`,
-          escapeHtml(c.customerName),
-          escapeHtml(c.vehicleModel),
-          escapeHtml(c.ppfBrand),
-          escapeHtml(c.installationDate),
+          { html: `<strong>${escapeHtml(c.registrationNumber)}</strong>`, class: 'cell-reg' },
+          { html: escapeHtml(c.customerName), class: 'cell-name' },
+          { html: escapeHtml(c.vehicleModel), class: 'cell-vehicle' },
+          { html: escapeHtml(c.ppfBrand), class: 'cell-brand' },
+          { html: escapeHtml(c.installationDate), class: 'cell-date' },
+          { html: escapeHtml(c.email), class: 'cell-email' }
         ];
 
-        cells.forEach(html => {
+        cells.forEach(item => {
           const td = document.createElement('td');
-          td.innerHTML = html;
+          td.className = item.class;
+          td.innerHTML = item.html;
           tr.appendChild(td);
         });
 
         // Action buttons — use data attributes to avoid inline event injection
         const actionTd = document.createElement('td');
-        actionTd.className = 'action-btns';
+        actionTd.className = 'action-btns cell-actions';
 
         const editBtn = document.createElement('button');
         editBtn.className = 'btn btn-warning';
