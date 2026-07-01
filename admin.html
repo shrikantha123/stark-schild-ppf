@@ -461,6 +461,15 @@
     </div>
   </div>
 
+  <!-- Inactivity Warning Modal -->
+  <div id="inactivity-warning" class="modal-overlay hidden" style="z-index: 2000;">
+    <div class="modal-content" style="text-align: center;">
+      <h3 id="modal-title" style="margin-bottom: 15px; color: var(--danger);">Session Expiring Soon</h3>
+      <p style="margin-bottom: 20px;">You have been inactive for a while. You will be logged out in <strong id="inactivity-countdown">60</strong> seconds to protect your session.</p>
+      <button class="btn" onclick="stayLoggedIn()">Stay Logged In</button>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast" class="toast">Message here</div>
 
@@ -475,19 +484,68 @@
     let searchTimeout = null;
     let currentSearch = '';
 
-    // Check Auth on Load — with expiry check for security
+    // ── Inactivity Auto-Logout (30 minutes) ──────────────────────────────────
+    const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
+    const WARNING_BEFORE   = 60 * 1000;       // warn 1 minute before logout
+    let inactivityTimer, warningTimer;
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      clearTimeout(warningTimer);
+      hideInactivityWarning();
+
+      // Warn 1 minute before auto-logout
+      warningTimer = setTimeout(() => {
+        showInactivityWarning();
+      }, INACTIVITY_LIMIT - WARNING_BEFORE);
+
+      // Auto-logout after 30 minutes of inactivity
+      inactivityTimer = setTimeout(() => {
+        logout();
+        showToast('Auto-logged out due to inactivity', 'error');
+      }, INACTIVITY_LIMIT);
+    }
+
+    function showInactivityWarning() {
+      document.getElementById('inactivity-warning').classList.remove('hidden');
+      let secs = 60;
+      const cd = document.getElementById('inactivity-countdown');
+      cd.innerText = secs;
+      const interval = setInterval(() => {
+        secs--;
+        cd.innerText = secs;
+        if (secs <= 0) clearInterval(interval);
+      }, 1000);
+    }
+
+    function hideInactivityWarning() {
+      document.getElementById('inactivity-warning').classList.add('hidden');
+    }
+
+    function stayLoggedIn() {
+      hideInactivityWarning();
+      resetInactivityTimer();
+    }
+
+    // Track user activity
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+      document.addEventListener(evt, () => {
+        if (sessionStorage.getItem('adminToken')) resetInactivityTimer();
+      });
+    });
+
+    // Check Auth on Load — uses sessionStorage (clears on browser/tab close)
     window.onload = () => {
-      const token = localStorage.getItem('adminToken');
-      const expiry = localStorage.getItem('adminTokenExpiry');
+      const token = sessionStorage.getItem('adminToken');
+      const expiry = sessionStorage.getItem('adminTokenExpiry');
       const now = Date.now();
-      // Auto-logout if token is missing OR expired (8 hours)
       if (token && expiry && now < parseInt(expiry)) {
         showDashboard();
         fetchCustomers();
+        resetInactivityTimer();
       } else {
-        // Clear any stale/expired token automatically
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminTokenExpiry');
+        sessionStorage.removeItem('adminToken');
+        sessionStorage.removeItem('adminTokenExpiry');
       }
     };
 
@@ -511,11 +569,12 @@
         });
         const data = await res.json();
         if (data.success) {
-          const expiryTime = Date.now() + (8 * 60 * 60 * 1000); // 8 hours from now
-          localStorage.setItem('adminToken', data.token);
-          localStorage.setItem('adminTokenExpiry', expiryTime.toString());
+          const expiryTime = Date.now() + (8 * 60 * 60 * 1000); // 8 hours max
+          sessionStorage.setItem('adminToken', data.token);
+          sessionStorage.setItem('adminTokenExpiry', expiryTime.toString());
           showDashboard();
           fetchCustomers();
+          resetInactivityTimer();
         } else {
           err.innerText = data.message;
         }
@@ -527,8 +586,11 @@
     });
 
     function logout() {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminTokenExpiry');
+      sessionStorage.removeItem('adminToken');
+      sessionStorage.removeItem('adminTokenExpiry');
+      clearTimeout(inactivityTimer);
+      clearTimeout(warningTimer);
+      hideInactivityWarning();
       document.getElementById('dashboard-view').classList.add('hidden');
       document.getElementById('login-view').classList.remove('hidden');
     }
@@ -546,7 +608,7 @@
     }
 
     async function authFetch(url, options = {}) {
-      const token = localStorage.getItem('adminToken');
+      const token = sessionStorage.getItem('adminToken');
       const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
       const res = await fetch(url, { ...options, headers });
       if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
