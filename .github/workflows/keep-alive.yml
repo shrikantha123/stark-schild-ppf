@@ -2,8 +2,8 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs every 5 minutes to prevent Supabase idle sleep
-    - cron: "*/5 * * * *"
+    # Runs every 10 minutes to prevent Supabase idle sleep
+    - cron: "*/10 * * * *"
   
   # Also allows you to trigger this workflow manually from the Actions tab
   workflow_dispatch:
