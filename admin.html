@@ -413,7 +413,7 @@
         padding: 15px;
       }
 
-      header {
+      s header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -448,7 +448,11 @@
         background: transparent;
       }
 
-      table, thead, tbody, tr, td {
+      table,
+      thead,
+      tbody,
+      tr,
+      td {
         display: block;
         width: 100%;
         box-sizing: border-box;
@@ -461,7 +465,8 @@
       tbody {
         display: flex;
         flex-direction: column;
-        gap: 20px; /* Suitable gap between cards */
+        gap: 20px;
+        /* Suitable gap between cards */
       }
 
       tr {
@@ -508,6 +513,7 @@
       .cell-name {
         grid-area: name;
       }
+
       .cell-name::before {
         content: "Name";
         display: block;
@@ -519,6 +525,7 @@
       .cell-brand {
         grid-area: brand;
       }
+
       .cell-brand::before {
         content: "Product";
         display: block;
@@ -530,6 +537,7 @@
       .cell-date {
         grid-area: date;
       }
+
       .cell-date::before {
         content: "Installation Date";
         display: block;
@@ -540,9 +548,11 @@
 
       .cell-phone {
         grid-area: phone;
-        display: block; /* Show on mobile */
+        display: block;
+        /* Show on mobile */
         word-break: break-all;
       }
+
       .cell-phone::before {
         content: "Phone";
         display: block;
@@ -576,7 +586,7 @@
   <div id="login-view">
     <a href="index.html" class="floating-back-btn" aria-label="Go Back">
       <svg viewBox="0 0 24 24">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
+        <path d="M19 12H5M12 19l-7-7 7-7" />
       </svg>
     </a>
     <div class="login-card">
@@ -584,14 +594,14 @@
           style="font-size:14px; letter-spacing:2px; color:var(--primary); font-weight:400; display:block; margin-top:8px;">ADMIN
           PORTAL</span></h2>
       <div id="login-error"></div>
-      <form id="login-form">
+      <form id="login-form" autocomplete="off">
         <div class="form-group">
           <label>Username</label>
-          <input type="text" id="username" class="form-control" required>
+          <input type="text" id="username" class="form-control" autocomplete="off" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="password" class="form-control" required>
+          <input type="password" id="password" class="form-control" autocomplete="new-password" required>
         </div>
         <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">SECURE LOGIN</button>
       </form>
@@ -630,7 +640,8 @@
         </tbody>
       </table>
     </div>
-    <div id="pagination-controls" style="margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:5px;"></div>
+    <div id="pagination-controls"
+      style="margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:5px;"></div>
   </div>
 
   <!-- MODAL -->
@@ -670,10 +681,12 @@
   <div class="modal-overlay" id="delete-modal-overlay">
     <div class="modal" style="max-width: 400px; text-align: center;">
       <h3 style="color: #CC0000; margin-bottom: 10px;">Delete Customer?</h3>
-      <p style="color: #bbb; margin-bottom: 25px;">Are you sure you want to delete registration number <strong id="delete-target-text" style="color: #fff;"></strong>? This action cannot be undone.</p>
+      <p style="color: #bbb; margin-bottom: 25px;">Are you sure you want to delete registration number <strong
+          id="delete-target-text" style="color: #fff;"></strong>? This action cannot be undone.</p>
       <div class="modal-footer" style="justify-content: center; gap: 15px;">
         <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">CANCEL</button>
-        <button type="button" class="btn" style="background: #CC0000;" id="confirm-delete-btn" onclick="confirmDeleteCustomer()">DELETE</button>
+        <button type="button" class="btn" style="background: #CC0000;" id="confirm-delete-btn"
+          onclick="confirmDeleteCustomer()">DELETE</button>
       </div>
     </div>
   </div>
@@ -682,7 +695,8 @@
   <div id="inactivity-warning" class="modal-overlay hidden" style="z-index: 2000;">
     <div class="modal-content" style="text-align: center;">
       <h3 id="modal-title" style="margin-bottom: 15px; color: var(--danger);">Session Expiring Soon</h3>
-      <p style="margin-bottom: 20px;">You have been inactive for a while. You will be logged out in <strong id="inactivity-countdown">60</strong> seconds to protect your session.</p>
+      <p style="margin-bottom: 20px;">You have been inactive for a while. You will be logged out in <strong
+          id="inactivity-countdown">60</strong> seconds to protect your session.</p>
       <button class="btn" onclick="stayLoggedIn()">Stay Logged In</button>
     </div>
   </div>
@@ -703,7 +717,7 @@
 
     // ── Inactivity Auto-Logout (30 minutes) ──────────────────────────────────
     const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
-    const WARNING_BEFORE   = 60 * 1000;       // warn 1 minute before logout
+    const WARNING_BEFORE = 60 * 1000;       // warn 1 minute before logout
     let inactivityTimer, warningTimer;
 
     function resetInactivityTimer() {
@@ -905,7 +919,7 @@
         delBtn.style.cssText = 'padding:5px 10px; font-size:12px;';
         delBtn.textContent = 'Del';
         delBtn.dataset.reg = c.registrationNumber;
-        delBtn.addEventListener('click', function() { promptDeleteCustomer(c.registrationNumber); });
+        delBtn.addEventListener('click', function () { promptDeleteCustomer(c.registrationNumber); });
 
         actionTd.appendChild(editBtn);
         actionTd.appendChild(delBtn);
@@ -1068,7 +1082,7 @@
     async function confirmDeleteCustomer() {
       if (!deleteTargetRegNo) return;
       const btnElement = document.getElementById('confirm-delete-btn');
-      
+
       const originalText = btnElement.innerText;
       btnElement.innerText = 'DELETING...';
       btnElement.classList.add('loading');
