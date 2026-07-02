@@ -281,43 +281,73 @@
       margin-bottom: 32px;
     }
 
-    .otp-input {
-      width: 48px;
-      height: 56px;
-      border: 1px solid #272727;
-      background: #1C1C1C;
-      color: #fff;
-      caret-color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      border-radius: 12px;
-      transition: border-color 0.2s, background 0.2s;
-      outline: none;
-      /* Fix: reset native baseline & center text vertically */
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      padding: 0;
-      line-height: 56px;
-      vertical-align: middle;
+    /* OTP redesign: div slots + single hidden input */
+    .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 32px;
+      position: relative;
     }
 
-    .otp-input:focus {
+    .otp-hidden-input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+    }
+
+    .otp-slot {
+      width: 48px;
+      height: 58px;
+      border: 2px solid #333;
+      background: #1a1a1a;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: text;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+
+    .otp-slot.active {
       border-color: #CC0000;
-      background: #222;
+      background: #221010;
+      box-shadow: 0 0 0 3px rgba(204,0,0,0.18);
+    }
+
+    .otp-slot.filled {
+      border-color: #555;
+      background: #1C1C1C;
+    }
+
+    .otp-slot .otp-cursor {
+      width: 2px;
+      height: 28px;
+      background: #CC0000;
+      border-radius: 2px;
+      animation: otp-blink 1s step-end infinite;
+    }
+
+    @keyframes otp-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
     }
 
     @media (max-width: 400px) {
-      .otp-inputs {
-        gap: 6px;
-      }
-      .otp-input {
+      .otp-slot {
         width: 40px;
         height: 50px;
-        font-size: 20px;
-        line-height: 50px;
+        font-size: 22px;
+        border-radius: 10px;
       }
     }
 
@@ -681,13 +711,14 @@
           <h3>Enter Verification Code</h3>
           <p>We've sent a 6-digit code to your email</p>
         </div>
-        <div class="otp-inputs">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="0">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="1">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="2">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="3">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="4">
-          <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-input" data-index="5">
+        <div class="otp-inputs" id="otp-slots-container" onclick="focusOtpInput()">
+          <input id="otp-hidden" class="otp-hidden-input" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code">
+          <div class="otp-slot" data-index="0"></div>
+          <div class="otp-slot" data-index="1"></div>
+          <div class="otp-slot" data-index="2"></div>
+          <div class="otp-slot" data-index="3"></div>
+          <div class="otp-slot" data-index="4"></div>
+          <div class="otp-slot" data-index="5"></div>
         </div>
         <p id="otp-error" class="error-message" style="display:none;"></p>
         <button type="button" class="verify-btn" onclick="verifyOTP()">Verify & Continue</button>
@@ -897,9 +928,7 @@
     // Step 2: Verify OTP
     async function verifyOTP() {
       hideOtpError();
-      const otpInputs = document.querySelectorAll('.otp-input');
-      let otp = '';
-      otpInputs.forEach(input => { otp += input.value; });
+      const otp = (document.getElementById('otp-hidden').value || '').replace(/\D/g, '');
 
       if (otp.length !== 6) {
         showOtpError('Please enter the complete 6-digit code');
@@ -984,7 +1013,7 @@
       document.getElementById('portal-header').style.display = 'block';
       document.getElementById('reg-number').value = '';
       document.getElementById('email-address').value = '';
-      document.querySelectorAll('.otp-input').forEach(input => { input.value = ''; });
+      const h = document.getElementById('otp-hidden'); if (h) { h.value = ''; renderOtpSlots(''); }
       _verifiedData = null;
       _currentReg = '';
       _currentEmail = '';
@@ -1027,28 +1056,61 @@
       }
     }
 
-    // OTP Input Auto-focus and Navigation
-    document.addEventListener('DOMContentLoaded', function () {
-      const otpInputs = document.querySelectorAll('.otp-input');
-      otpInputs.forEach((input, index) => {
-        input.addEventListener('input', function (e) {
-          if (this.value.length === 1 && index < otpInputs.length - 1) {
-            otpInputs[index + 1].focus();
-          }
-        });
-        input.addEventListener('keydown', function (e) {
-          if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
-            otpInputs[index - 1].focus();
-          }
-        });
-        input.addEventListener('paste', function (e) {
-          e.preventDefault();
-          const pastedData = e.clipboardData.getData('text').slice(0, 6);
-          pastedData.split('').forEach((char, i) => {
-            if (otpInputs[i]) otpInputs[i].value = char;
-          });
-        });
+    // OTP redesign: single hidden input + div slot rendering
+    function focusOtpInput() {
+      document.getElementById('otp-hidden').focus();
+    }
+
+    function renderOtpSlots(value) {
+      const slots = document.querySelectorAll('.otp-slot');
+      const cursor = value.length;
+      slots.forEach((slot, i) => {
+        const char = value[i] || '';
+        const isActive = (i === cursor) || (i === 5 && cursor >= 6);
+        slot.textContent = '';
+        slot.classList.toggle('active', isActive);
+        slot.classList.toggle('filled', char !== '');
+        if (char) {
+          slot.textContent = char;
+        } else if (isActive) {
+          const cur = document.createElement('span');
+          cur.className = 'otp-cursor';
+          slot.appendChild(cur);
+        }
       });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const hiddenInput = document.getElementById('otp-hidden');
+      if (!hiddenInput) return;
+
+      // Show cursor on first slot by default
+      renderOtpSlots('');
+
+      hiddenInput.addEventListener('input', function () {
+        // Only allow digits
+        this.value = this.value.replace(/\D/g, '').slice(0, 6);
+        renderOtpSlots(this.value);
+      });
+
+      hiddenInput.addEventListener('focus', function () {
+        renderOtpSlots(this.value);
+      });
+
+      hiddenInput.addEventListener('blur', function () {
+        // Remove active state from all slots when blurred
+        document.querySelectorAll('.otp-slot').forEach(s => s.classList.remove('active'));
+      });
+
+      // Auto-focus when OTP screen appears
+      const observer = new MutationObserver(() => {
+        const otpDiv = document.getElementById('otp-verification');
+        if (otpDiv && otpDiv.style.display !== 'none') {
+          setTimeout(() => { hiddenInput.focus(); renderOtpSlots(''); }, 100);
+        }
+      });
+      const otpDiv = document.getElementById('otp-verification');
+      if (otpDiv) observer.observe(otpDiv, { attributes: true, attributeFilter: ['style'] });
     });
   </script>
 </body>
