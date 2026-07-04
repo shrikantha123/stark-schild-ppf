@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Disallow admin dashboard from indexing
+Disallow: /admin.html
+
+# Sitemap location
+Sitemap: https://starkschild.com/sitemap.xml
