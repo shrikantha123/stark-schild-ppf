@@ -619,6 +619,41 @@
       <button class="btn btn-danger" onclick="logout()">LOGOUT</button>
     </header>
 
+    <!-- DB STATUS BANNER — hidden by default, shown when Supabase is paused -->
+    <div id="db-status-banner" style="
+      display: none;
+      background: linear-gradient(135deg, #3a0000, #1a0000);
+      border: 1px solid #CC0000;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 0 0 20px 0;
+      display: none;
+      align-items: center;
+      gap: 16px;
+      animation: pulse-border 2s infinite;
+    ">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF3D00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <div style="flex:1">
+        <strong style="color:#FF3D00; font-size:15px;">🚨 Database is Paused (Supabase)</strong>
+        <p style="color:rgba(255,255,255,0.7); font-size:13px; margin:4px 0 0 0;">
+          Your Supabase free-tier project was paused due to inactivity. Customers cannot log in and you cannot add/edit records right now.
+        </p>
+      </div>
+      <a href="https://supabase.com" target="_blank" style="
+        background: #CC0000; color: #fff; padding: 10px 18px; border-radius: 8px;
+        text-decoration: none; font-size: 13px; font-weight: 700; white-space: nowrap;
+        flex-shrink: 0;
+      ">Restore Now →</a>
+    </div>
+    <style>
+      @keyframes pulse-border {
+        0%, 100% { border-color: #CC0000; box-shadow: 0 0 0 0 rgba(204,0,0,0); }
+        50% { border-color: #FF3D00; box-shadow: 0 0 0 6px rgba(204,0,0,0.15); }
+      }
+    </style>
+
     <div class="toolbar">
       <div class="search-box">
         <input type="text" id="search-input" placeholder="Search by Reg No or Email...">
@@ -857,12 +892,29 @@
         if (search) params.set('search', search);
         const data = await authFetch(`${API_BASE}/get-customers?${params.toString()}`);
         if (data.success) {
+          hidDbPausedBanner();
           currentCustomers = data.data;
           totalPages = data.pagination ? data.pagination.totalPages : 1;
           renderTable(currentCustomers);
           renderPagination(data.pagination);
+        } else if (data.message && (data.message.includes('temporarily unavailable') || data.message.includes('paused'))) {
+          showDbPausedBanner();
+        } else {
+          showToast(data.message || 'Failed to load customers', 'error');
         }
-      } catch (e) { showToast('Failed to load customers', 'error'); }
+      } catch (e) {
+        showDbPausedBanner();
+      }
+    }
+
+    function showDbPausedBanner() {
+      const banner = document.getElementById('db-status-banner');
+      if (banner) banner.style.display = 'flex';
+    }
+
+    function hidDbPausedBanner() {
+      const banner = document.getElementById('db-status-banner');
+      if (banner) banner.style.display = 'none';
     }
 
     // Safely escape text to prevent XSS

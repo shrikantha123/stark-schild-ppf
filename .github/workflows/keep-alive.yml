@@ -2,9 +2,9 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs every 3 days — Supabase pauses after 7 days of inactivity, so this is a safe margin
+    # Runs every 3 days — Supabase pauses after 7 days of inactivity
     - cron: "0 6 */3 * *"
-  
+
   # Allows manual trigger from the GitHub Actions tab
   workflow_dispatch:
 
@@ -15,19 +15,60 @@ jobs:
       - name: Ping Netlify Function (wakes Supabase via app)
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://stark-schild-ppf.netlify.app/.netlify/functions/ping")
-          echo "Netlify ping status: $STATUS"
+          echo "Netlify ping HTTP status: $STATUS"
           if [ "$STATUS" != "200" ]; then
-            echo "Warning: Netlify ping returned $STATUS"
+            echo "::warning::Netlify ping returned $STATUS — Supabase may be paused!"
+          else
+            echo "Netlify ping OK"
           fi
 
-      - name: Direct Supabase REST ping (backup keep-alive)
+      - name: Direct Supabase REST ping (health check)
+        id: supabase_ping
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+          BODY=$(curl -s -w "\n%{http_code}" \
             -H "apikey: $SUPABASE_SERVICE_KEY" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
             "$SUPABASE_URL/rest/v1/customers?select=id&limit=1")
-          echo "Supabase direct ping status: $STATUS"
-          echo "Keep-alive complete!"
+
+          HTTP_STATUS=$(echo "$BODY" | tail -1)
+          RESPONSE=$(echo "$BODY" | head -1)
+
+          echo "Supabase HTTP status: $HTTP_STATUS"
+          echo "Response: $RESPONSE"
+
+          # Status 200 or 206 means Supabase is alive
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "206" ]; then
+            echo "✅ Supabase is healthy and running!"
+          else
+            echo "status=paused" >> $GITHUB_OUTPUT
+            # This makes the step fail so GitHub sends you an email alert
+            echo "❌ Supabase returned $HTTP_STATUS — project may be PAUSED!"
+            echo "Action required: Go to https://supabase.com and restore your project."
+            exit 1
+          fi
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: ping
+    if: failure()
+    steps:
+      - name: Alert — Supabase project is PAUSED
+        run: |
+          echo "============================================"
+          echo "🚨 ALERT: Supabase project appears to be PAUSED"
+          echo "============================================"
+          echo ""
+          echo "Your Stark Schild PPF database is not responding."
+          echo "Customers cannot add records or log in right now."
+          echo ""
+          echo "TO FIX:"
+          echo "  1. Go to https://supabase.com"
+          echo "  2. Log in and open your project"
+          echo "  3. Click 'Restore project'"
+          echo "  4. Wait ~2 minutes for it to wake up"
+          echo ""
+          echo "This GitHub Actions job FAILED intentionally"
+          echo "so that GitHub sends you a failure email alert."
