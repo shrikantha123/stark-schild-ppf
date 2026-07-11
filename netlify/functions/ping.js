@@ -1,4 +1,4 @@
-const { getSupabase, safeSupabaseQuery } = require('../utils/supabase');
+const { getSupabase } = require('../utils/supabase');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
@@ -13,9 +13,7 @@ exports.handler = async (event) => {
     const supabase = getSupabase();
     
     // Very lightweight query just to wake up/keep-alive the DB
-    const { error } = await safeSupabaseQuery(
-      () => supabase.from('customers').select('id').limit(1)
-    );
+    const { error } = await supabase.from('customers').select('id').limit(1);
 
     if (error) {
       console.error('Ping error:', error);

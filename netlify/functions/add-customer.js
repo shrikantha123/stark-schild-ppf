@@ -86,10 +86,18 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error('Add customer error:', error);
+    // Detect Supabase/Cloudflare downtime (returns HTML instead of JSON)
+    const msg = error.message || '';
+    const isDbDown = msg.includes('<!DOCTYPE') || msg.includes('Web server is down') || msg.includes('521') || msg.includes('502') || msg.includes('503');
     return {
-      statusCode: 500,
+      statusCode: isDbDown ? 503 : 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ success: false, message: error.message || 'Internal Server Error', stack: error.stack })
+      body: JSON.stringify({
+        success: false,
+        message: isDbDown
+          ? 'Database is temporarily unavailable. Please try again in a few minutes.'
+          : (error.message || 'Internal Server Error')
+      })
     };
   }
 };

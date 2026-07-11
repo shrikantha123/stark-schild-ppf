@@ -77,10 +77,17 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     console.error('Delete customer error:', error);
+    const msg = error.message || '';
+    const isDbDown = msg.includes('<!DOCTYPE') || msg.includes('Web server is down') || msg.includes('521') || msg.includes('502') || msg.includes('503');
     return {
-      statusCode: 500,
+      statusCode: isDbDown ? 503 : 500,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ success: false, message: 'Internal Server Error' })
+      body: JSON.stringify({
+        success: false,
+        message: isDbDown
+          ? 'Database is temporarily unavailable. Please try again in a few minutes.'
+          : 'Internal Server Error'
+      })
     };
   }
 };

@@ -2,19 +2,32 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs every 10 minutes to prevent Supabase idle sleep
-    - cron: "*/10 * * * *"
+    # Runs every 3 days — Supabase pauses after 7 days of inactivity, so this is a safe margin
+    - cron: "0 6 */3 * *"
   
-  # Also allows you to trigger this workflow manually from the Actions tab
+  # Allows manual trigger from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Backend Endpoint
-        # Replace the URL below with your actual deployed Netlify function URL.
-        # Hitting 'ping' forces the backend to talk to Supabase lightly without auth errors.
+      - name: Ping Netlify Function (wakes Supabase via app)
         run: |
-          curl -s "https://your-website.com/.netlify/functions/ping" > /dev/null
-          echo "Ping successful!"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://stark-schild-ppf.netlify.app/.netlify/functions/ping")
+          echo "Netlify ping status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Warning: Netlify ping returned $STATUS"
+          fi
+
+      - name: Direct Supabase REST ping (backup keep-alive)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/customers?select=id&limit=1")
+          echo "Supabase direct ping status: $STATUS"
+          echo "Keep-alive complete!"
