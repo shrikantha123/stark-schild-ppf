@@ -5,4 +5,4 @@ Allow: /
 Disallow: /admin.html
 
 # Sitemap location
-Sitemap: https://stark-schild-ppf.netlify.app/sitemap.xml
+Sitemap: https://starkschild.in/sitemap.xml

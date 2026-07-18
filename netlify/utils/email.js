@@ -10,7 +10,7 @@ async function sendOtpEmail(toEmail, otpCode) {
       body: JSON.stringify({
         sender: {
           name: "Stark Schild PPF",
-          email: process.env.EMAIL_FROM
+          email: "noreply@starkschild.in"
         },
         to: [
           {
@@ -59,8 +59,8 @@ async function sendContactEmail(name, email, phone, message) {
       },
       body: JSON.stringify({
         sender: {
-          name: name,
-          email: process.env.EMAIL_FROM // Must send from verified sender (your own email)
+          name: "Stark Schild PPF",
+          email: "noreply@starkschild.in" // Verified custom domain sender
         },
         to: [
           {
