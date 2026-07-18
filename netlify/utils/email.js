@@ -64,7 +64,7 @@ async function sendContactEmail(name, email, phone, message) {
         },
         to: [
           {
-            email: "sshrikantha565@gmail.com"
+            email: "starkschild1@gmail.com"
           }
         ],
         replyTo: {
