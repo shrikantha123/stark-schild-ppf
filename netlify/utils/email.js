@@ -10,7 +10,7 @@ async function sendOtpEmail(toEmail, otpCode) {
       body: JSON.stringify({
         sender: {
           name: "Stark Schild PPF",
-          email: "noreply@starkschild.in"
+          email: process.env.EMAIL_FROM
         },
         to: [
           {
@@ -60,7 +60,7 @@ async function sendContactEmail(name, email, phone, message) {
       body: JSON.stringify({
         sender: {
           name: "Stark Schild PPF",
-          email: "noreply@starkschild.in" // Verified custom domain sender
+          email: process.env.EMAIL_FROM // Verified sender set via Netlify env var
         },
         to: [
           {
